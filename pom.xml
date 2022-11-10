@@ -9,10 +9,10 @@
 		<version>2.7.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.project.Helpin1</groupId>
-	<artifactId>Helpin-api-1</artifactId>
+	<groupId>com.project.Helpin</groupId>
+	<artifactId>Helpin-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Helpin-api-1</name>
+	<name>Helpin-api</name>
 	<description>Helpin borracharia</description>
 	<properties>
 		<java.version>11</java.version>
