@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import br.com.helpin.api.model.Usuario;
 import br.com.helpin.api.model.Veiculo;
 import br.com.helpin.api.repository.VeiculoRepository;
+import br.com.helpin.exception.EntidadeEmUsoException;
+import br.com.helpin.exception.EntidadeNaoEncontradaException;
 
 @Service
 public class VeiculoService {
@@ -25,22 +28,22 @@ public class VeiculoService {
 				.stream()
 				.anyMatch(usuarioExistente -> !usuarioExistente.equals(veiculo));
 		if(veiculoEmUso) {
-			throw new RuntimeException("Veiculo já cadastrado");
+			throw new EntidadeEmUsoException(String.format("Veiculo com numero de placa %s já foi cadastrado", veiculo.getPlaca()));
 		}
 		return veiculoRepository.save(veiculo);
 			
 	}
 	
-	public ResponseEntity<Veiculo> removerVeiculo(@PathVariable Long id){
+	public void removerVeiculo(@PathVariable Long id){
 		
-		Optional<Veiculo> opcional = veiculoRepository.findById(id);
-		if (opcional.isPresent()) {
+		try {
+
 			veiculoRepository.deleteById(id);
-			
-			return ResponseEntity.ok().build();
+
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException(
+					String.format("Não existe cadastro de id com id %d", id));
 		}
-		
-		return ResponseEntity.notFound().build();
 	}
 	
 	

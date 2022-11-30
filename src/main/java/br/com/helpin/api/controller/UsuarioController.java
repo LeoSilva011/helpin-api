@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.helpin.api.model.Usuario;
 import br.com.helpin.api.service.UsuarioService;
+import br.com.helpin.exception.EntidadeEmUsoException;
+import br.com.helpin.exception.EntidadeNaoEncontradaException;
 
 
 @RestController
@@ -31,14 +33,30 @@ public class UsuarioController {
 
 	@PostMapping("/cadastro")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Usuario adicionar(@RequestBody Usuario usuario) {
-		return usuarioService.salvarNovoUsuario(usuario);
+	public ResponseEntity<?> adicionar(@RequestBody Usuario usuario) {
+		try {
+			usuario = usuarioService.salvarNovoUsuario(usuario);
+			return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+			
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
 	}
 	
 	@DeleteMapping("deletar/{id}")
-	public ResponseEntity<Usuario> remover(@PathVariable Long id){
+	public ResponseEntity<?> remover(@PathVariable Long id){
+	try {
+			
+		usuarioService.apagarUsuario(id);
+	    return ResponseEntity.noContent().build();
+			
 		
-		return usuarioService.apagarUsuario(id);
+		}catch (EntidadeNaoEncontradaException e) {
+			
+			return ResponseEntity.notFound().build();
+		}
+		
 	}
 	
 	
