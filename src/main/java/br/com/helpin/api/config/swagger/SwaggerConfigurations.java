@@ -22,7 +22,7 @@ public class SwaggerConfigurations {
 
 	        return new Docket(DocumentationType.SWAGGER_2)
 	                .select()
-	                .apis(RequestHandlerSelectors.basePackage("com.project.Helpin"))
+	                .apis(RequestHandlerSelectors.basePackage("br.com.helpin.api"))
 	                .paths(PathSelectors.ant("/**"))
 	                .build()
 	                .ignoredParameterTypes(Usuario.class)
